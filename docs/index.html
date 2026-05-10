@@ -91,13 +91,13 @@
           {text: 'Position', dataIndex: 'position', flex: 1},
           {text: 'Department', dataIndex: 'department', flex: 1},
           {
-            text: 'Salário', dataIndex: 'salario', width: 100,
+            text: 'Wage', dataIndex: 'wage', width: 100,
             renderer: v => `R$ ${parseFloat(v).toFixed(2)}`
           },
           {text: 'Admission', dataIndex: 'admission_date', width: 110},
           {text: 'Status', dataIndex: 'status', width: 80},
           {
-            text: 'Ações', width: 120, align: 'center',
+            text: 'Actions', width: 120, align: 'center',
             renderer: function (v, meta, record) {
               return `
                         <button onclick="editarFuncionario(${record.data.id})" style="margin-right:4px;cursor:pointer;">✏️</button>
@@ -107,7 +107,7 @@
           }
         ],
         tbar: [{
-          text: 'Atualizar', iconCls: 'x-fa fa-refresh',
+          text: 'Refresh', iconCls: 'x-fa fa-refresh',
           handler: () => store.reload()
         }]
       });
@@ -117,7 +117,7 @@
         items: [
           {
             region: 'north', height: 50,
-            html: '<div style="background:#16213e;color:#e0e0e0;padding:14px 20px;font-size:18px;font-weight:bold;">👥 Sistema de Gestão de Funcionários</div>'
+            html: '<div style="background:#16213e;color:#e0e0e0;padding:14px 20px;font-size:18px;font-weight:bold;">👥 Employees Management System</div>'
           },
           {
             region: 'west', width: 380, split: true,
