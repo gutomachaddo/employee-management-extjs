@@ -8,7 +8,7 @@ A full CRUD application for employee management built with ExtJS 6 on the fronte
 - **Database:** PostgreSQL
 
 ## Live Demo
-🔗 [View Frontend Demo](https://seuusuario.github.io/employee-management-extjs)
+🔗 [View Frontend Demo](https://gutomachaddo.github.io/employee-management-extjs)
 
 > **Note:** The live demo displays a static version of the interface.
 > To use the full CRUD functionality, run the project locally following the instructions below.
