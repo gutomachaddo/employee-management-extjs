@@ -1,159 +1,164 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>RH - Gestão de Funcionários</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/classic/theme-crisp/resources/theme-crisp-all.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/ext-all.js"></script>
-    <style>
-        body { margin: 0; padding: 0; background: #1a1a2e; }
-    </style>
-</head>
-<body>
-<script>
-Ext.onReady(function() {
 
-    // Store - responsável por buscar e guardar os dados da API
-    const store = Ext.create('Ext.data.Store', {
-        fields: ['id','nome','email','cargo','departamento','salario','data_admissao','status'],
+<head>
+  <meta charset="UTF-8">
+  <title>HR - Employees Management</title>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/classic/theme-crisp/resources/theme-crisp-all.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/extjs/6.0.0/ext-all.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #1a1a2e;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    Ext.onReady(function () {
+
+      const store = Ext.create('Ext.data.Store', {
+        fields: ['id', 'name', 'email', 'postition', 'department', 'wage', 'admission_date', 'status'],
         proxy: {
-            type: 'ajax',
-            url: 'http://localhost:3000/api/funcionarios',
-            reader: { type: 'json', rootProperty: '' }
+          type: 'ajax',
+          url: 'http://localhost:3000/api/employees',
+          reader: {type: 'json', rootProperty: ''}
         },
         autoLoad: true
-    });
+      });
 
-    // Formulário de cadastro/edição
-    const form = Ext.create('Ext.form.Panel', {
-        title: 'Dados do Funcionário',
+      const form = Ext.create('Ext.form.Panel', {
+        title: 'Employee data',
         bodyPadding: 15,
         defaultType: 'textfield',
-        defaults: { anchor: '100%', labelWidth: 130 },
+        defaults: {anchor: '100%', labelWidth: 130},
         items: [
-            { name: 'id', xtype: 'hiddenfield' },
-            { fieldLabel: 'Nome',         name: 'nome',          allowBlank: false },
-            { fieldLabel: 'Email',        name: 'email',         allowBlank: false, vtype: 'email' },
-            { fieldLabel: 'Cargo',        name: 'cargo',         allowBlank: false },
-            { fieldLabel: 'Departamento', name: 'departamento',  allowBlank: false },
-            { fieldLabel: 'Salário',      name: 'salario',       allowBlank: false, xtype: 'numberfield' },
-            { fieldLabel: 'Admissão',     name: 'data_admissao', allowBlank: false, xtype: 'datefield', format: 'Y-m-d' },
-            {
-                fieldLabel: 'Status', name: 'status', xtype: 'combobox',
-                store: ['ATIVO', 'INATIVO'], value: 'ATIVO', allowBlank: false
-            }
+          {name: 'id', xtype: 'hiddenfield'},
+          {fieldLabel: 'Name', name: 'name', allowBlank: false},
+          {fieldLabel: 'Email', name: 'email', allowBlank: false, vtype: 'email'},
+          {fieldLabel: 'Position', name: 'position', allowBlank: false},
+          {fieldLabel: 'Department', name: 'department', allowBlank: false},
+          {fieldLabel: 'Wage', name: 'wage', allowBlank: false, xtype: 'numberfield'},
+          {fieldLabel: 'Admission', name: 'admission_date', allowBlank: false, xtype: 'datefield', format: 'Y-m-d'},
+          {
+            fieldLabel: 'Status', name: 'status', xtype: 'combobox',
+            store: ['ACTIVE', 'INACTIVE'], value: 'ACTIVE', allowBlank: false
+          }
         ],
         buttons: [
-            {
-                text: 'Salvar', iconCls: 'x-fa fa-save', formBind: true,
-                handler: function() {
-                    const values = form.getValues();
-                    const id = values.id;
-                    const method = id ? 'PUT' : 'POST';
-                    const url = id
-                        ? `http://localhost:3000/api/funcionarios/${id}`
-                        : 'http://localhost:3000/api/funcionarios';
+          {
+            text: 'Save', iconCls: 'x-fa fa-save', formBind: true,
+            handler: function () {
+              const values = form.getValues();
+              const id = values.id;
+              const method = id ? 'PUT' : 'POST';
+              const url = id
+                ? `http://localhost:3000/api/employees/${id}`
+                : 'http://localhost:3000/api/employees';
 
-                    Ext.Ajax.request({
-                        url, method,
-                        jsonData: values,
-                        success: function() {
-                            store.reload();
-                            form.reset();
-                            Ext.Msg.alert('Sucesso', id ? 'Funcionário atualizado!' : 'Funcionário cadastrado!');
-                        },
-                        failure: function() {
-                            Ext.Msg.alert('Erro', 'Não foi possível salvar.');
-                        }
-                    });
+              Ext.Ajax.request({
+                url, method,
+                jsonData: values,
+                success: function () {
+                  store.reload();
+                  form.reset();
+                  Ext.Msg.alert('Success', id ? 'Updated employee!' : 'Registered employee!');
+                },
+                failure: function () {
+                  Ext.Msg.alert('Error', 'Could not save.');
                 }
-            },
-            {
-                text: 'Limpar', iconCls: 'x-fa fa-times',
-                handler: function() { form.reset(); }
+              });
             }
+          },
+          {
+            text: 'Clear', iconCls: 'x-fa fa-times',
+            handler: function () {form.reset();}
+          }
         ]
-    });
+      });
 
-    // Grid - tabela de funcionários
-    const grid = Ext.create('Ext.grid.Panel', {
-        title: 'Funcionários',
+      const grid = Ext.create('Ext.grid.Panel', {
+        title: 'Employees',
         store: store,
         flex: 1,
         columns: [
-            { text: 'ID',            dataIndex: 'id',            width: 50 },
-            { text: 'Nome',          dataIndex: 'nome',          flex: 1 },
-            { text: 'Email',         dataIndex: 'email',         flex: 1 },
-            { text: 'Cargo',         dataIndex: 'cargo',         flex: 1 },
-            { text: 'Departamento',  dataIndex: 'departamento',  flex: 1 },
-            { text: 'Salário',       dataIndex: 'salario',       width: 100,
-              renderer: v => `R$ ${parseFloat(v).toFixed(2)}` },
-            { text: 'Admissão',      dataIndex: 'data_admissao', width: 110 },
-            { text: 'Status',        dataIndex: 'status',        width: 80 },
-            {
-                text: 'Ações', width: 120, align: 'center',
-                renderer: function(v, meta, record) {
-                    return `
+          {text: 'ID', dataIndex: 'id', width: 50},
+          {text: 'Name', dataIndex: 'name', flex: 1},
+          {text: 'Email', dataIndex: 'email', flex: 1},
+          {text: 'Position', dataIndex: 'position', flex: 1},
+          {text: 'Department', dataIndex: 'department', flex: 1},
+          {
+            text: 'Salário', dataIndex: 'salario', width: 100,
+            renderer: v => `R$ ${parseFloat(v).toFixed(2)}`
+          },
+          {text: 'Admission', dataIndex: 'admission_date', width: 110},
+          {text: 'Status', dataIndex: 'status', width: 80},
+          {
+            text: 'Ações', width: 120, align: 'center',
+            renderer: function (v, meta, record) {
+              return `
                         <button onclick="editarFuncionario(${record.data.id})" style="margin-right:4px;cursor:pointer;">✏️</button>
                         <button onclick="deletarFuncionario(${record.data.id})" style="cursor:pointer;">🗑️</button>
                     `;
-                }
             }
+          }
         ],
         tbar: [{
-            text: 'Atualizar', iconCls: 'x-fa fa-refresh',
-            handler: () => store.reload()
+          text: 'Atualizar', iconCls: 'x-fa fa-refresh',
+          handler: () => store.reload()
         }]
-    });
+      });
 
-    // Layout principal
-    Ext.create('Ext.container.Viewport', {
+      Ext.create('Ext.container.Viewport', {
         layout: 'border',
         items: [
-            {
-                region: 'north', height: 50,
-                html: '<div style="background:#16213e;color:#e0e0e0;padding:14px 20px;font-size:18px;font-weight:bold;">👥 Sistema de Gestão de Funcionários</div>'
-            },
-            {
-                region: 'west', width: 380, split: true,
-                layout: 'fit', items: [form]
-            },
-            {
-                region: 'center',
-                layout: { type: 'vbox', align: 'stretch' },
-                items: [grid]
-            }
+          {
+            region: 'north', height: 50,
+            html: '<div style="background:#16213e;color:#e0e0e0;padding:14px 20px;font-size:18px;font-weight:bold;">👥 Sistema de Gestão de Funcionários</div>'
+          },
+          {
+            region: 'west', width: 380, split: true,
+            layout: 'fit', items: [form]
+          },
+          {
+            region: 'center',
+            layout: {type: 'vbox', align: 'stretch'},
+            items: [grid]
+          }
         ]
-    });
+      });
 
-    // Funções globais dos botões da grid
-    window.editarFuncionario = function(id) {
+      window.editarFuncionario = function (id) {
         Ext.Ajax.request({
-            url: `http://localhost:3000/api/funcionarios/${id}`,
-            success: function(response) {
-                const data = Ext.decode(response.responseText);
-                data.data_admissao = data.data_admissao ? data.data_admissao.split('T')[0] : '';
-                form.getForm().setValues(data);
-            }
+          url: `http://localhost:3000/api/employees/${id}`,
+          success: function (response) {
+            const data = Ext.decode(response.responseText);
+            data.admission_date = data.admission_date ? data.admission_date.split('T')[0] : '';
+            form.getForm().setValues(data);
+          }
         });
-    };
+      };
 
-    window.deletarFuncionario = function(id) {
-        Ext.Msg.confirm('Confirmar', 'Deseja remover este funcionário?', function(btn) {
-            if (btn === 'yes') {
-                Ext.Ajax.request({
-                    url: `http://localhost:3000/api/funcionarios/${id}`,
-                    method: 'DELETE',
-                    success: function() {
-                        store.reload();
-                        Ext.Msg.alert('Sucesso', 'Funcionário removido!');
-                    }
-                });
-            }
+      window.deletarFuncionario = function (id) {
+        Ext.Msg.confirm('Confirm', 'Do you really want to remove this employee?', function (btn) {
+          if (btn === 'yes') {
+            Ext.Ajax.request({
+              url: `http://localhost:3000/api/employees/${id}`,
+              method: 'DELETE',
+              success: function () {
+                store.reload();
+                Ext.Msg.alert('Success!', 'Employee was removed!');
+              }
+            });
+          }
         });
-    };
+      };
 
-});
-</script>
+    });
+  </script>
 </body>
+
 </html>
